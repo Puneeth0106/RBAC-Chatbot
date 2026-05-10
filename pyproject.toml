@@ -6,4 +6,11 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "fastapi[standard]>=0.115.12",
+    "langchain>=1.2.18",
+    "langchain-anthropic>=0.3.22",
+    "langchain-astradb>=0.7",
+    "langchain-core>=0.3.86",
+    "langchain-openai>=0.3.35",
+    "markdown>=3.10.2",
+    "unstructured>=0.18.32",
 ]
