@@ -46,9 +46,9 @@ def test(user=Depends(authenticate)):
 
 # Protected chat endpoint
 @app.post("/chat")
-def query(user=Depends(authenticate), request= ChatRequest):
+def query(request: ChatRequest,user=Depends(authenticate)) :
     user_role= user['role']
     message= request.message
 
-
-    return "Implement this endpoint."
+    response= build_chain(user_role).invoke(message)
+    return response
