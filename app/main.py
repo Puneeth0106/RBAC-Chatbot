@@ -3,6 +3,10 @@ from typing import Dict
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
+from app.schemas.chat import ChatRequest
+
+from src.chain import build_chain
+
 
 app = FastAPI()
 security = HTTPBasic()
@@ -42,5 +46,9 @@ def test(user=Depends(authenticate)):
 
 # Protected chat endpoint
 @app.post("/chat")
-def query(user=Depends(authenticate), message: str = "Hello"):
+def query(user=Depends(authenticate), request= ChatRequest):
+    user_role= user['role']
+    message= request.message
+
+
     return "Implement this endpoint."
