@@ -12,5 +12,6 @@ dependencies = [
     "langchain-core>=0.3.86",
     "langchain-openai>=0.3.35",
     "markdown>=3.10.2",
+    "pandas>=2.3.3",
     "unstructured>=0.18.32",
 ]
