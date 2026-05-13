@@ -1,9 +1,9 @@
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
-from src.config import DATA_PATH,GLOB_PATTERN, CHUNK_OVERLAP,CHUNK_SIZE
+from app.services.config import DATA_PATH,GLOB_PATTERN, CHUNK_OVERLAP,CHUNK_SIZE
 from langchain_astradb import AstraDBVectorStore
-from src.config import COLLECTION_NAME
-from src.model import embedding_model
+from app.services.config import COLLECTION_NAME
+from app.services.model import embedding_model
 import os
 
 def loading_docs(path):

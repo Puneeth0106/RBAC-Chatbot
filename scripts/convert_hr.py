@@ -1,5 +1,5 @@
 import pandas as pd
-from src.config import DATA_PATH
+from app.services.config import DATA_PATH
 
 path = DATA_PATH / 'hr'
 df = pd.read_csv(path / 'hr_data.csv')

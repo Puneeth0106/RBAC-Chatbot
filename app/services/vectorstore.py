@@ -1,6 +1,6 @@
 import os
 from langchain_astradb import AstraDBVectorStore
-from src.config import COLLECTION_NAME
+from app.services.config import COLLECTION_NAME
 
 
 def get_vector_store(embedding_model):

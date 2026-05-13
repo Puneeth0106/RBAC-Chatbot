@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain_openai.embeddings import OpenAIEmbeddings
-from src.config import CHAT_MODEL_NAME, TEMPERATURE, TIMEOUT,MAX_RETRIES,MAX_TOKENS,EMBEDDING_MODEL
+from app.services.config import CHAT_MODEL_NAME, TEMPERATURE, TIMEOUT,MAX_RETRIES,MAX_TOKENS,EMBEDDING_MODEL
 
 def chat_model():
     load_dotenv()

@@ -1,6 +1,6 @@
-from src.model import chat_model, embedding_model
-from src.vectorstore import get_vector_store
-from src.config import RETRIEVER_K
+from app.services.model import chat_model, embedding_model
+from app.services.vectorstore import get_vector_store
+from app.services.config import RETRIEVER_K
 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel, RunnableLambda

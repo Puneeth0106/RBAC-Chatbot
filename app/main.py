@@ -5,7 +5,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.schemas.chat import ChatRequest, ChatResponse
 
-from src.chain import build_chain
+from app.services.chain import build_chain
 
 
 app = FastAPI()
