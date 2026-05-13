@@ -3,7 +3,7 @@ from typing import Dict
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatRequest, ChatResponse
 
 from src.chain import build_chain
 
@@ -45,10 +45,10 @@ def test(user=Depends(authenticate)):
 
 
 # Protected chat endpoint
-@app.post("/chat")
+@app.post("/chat",response_model= ChatResponse)
 def query(request: ChatRequest,user=Depends(authenticate)) :
     user_role= user['role']
     message= request.message
 
     response= build_chain(user_role).invoke(message)
-    return response
+    return ChatResponse(answer=response )
