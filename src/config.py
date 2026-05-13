@@ -1,3 +1,5 @@
+from pathlib import Path
+
 # Model config
 CHAT_MODEL_NAME = "claude-haiku-4-5-20251001"
 TEMPERATURE = 0.7
@@ -7,7 +9,7 @@ MAX_RETRIES = 6
 EMBEDDING_MODEL = "text-embedding-3-large"
 
 # Indexing config
-DATA_PATH = '/Users/puneeth/Desktop/my_projects/RBAC-Chatbot/resources/data'
+DATA_PATH = Path(__file__).parent.parent.joinpath('resources/data')
 GLOB_PATTERN = "**/*.md"
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
