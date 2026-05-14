@@ -47,8 +47,11 @@ def test(user=Depends(authenticate)):
 # Protected chat endpoint
 @app.post("/chat",response_model= ChatResponse)
 def query(request: ChatRequest,user=Depends(authenticate)) :
+    session_key=  f"{user['username']}:{request.session_id}"
     user_role= user['role']
     message= request.message
 
-    response= build_chain(user_role).invoke(message)
+    response= build_chain(user_role).invoke(
+        {'question' :message},
+        config={"configurable": {"session_id": session_key}})
     return ChatResponse(answer=response )
