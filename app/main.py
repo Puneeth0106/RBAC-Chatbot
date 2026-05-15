@@ -60,7 +60,7 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
     request_id_var.set(request_id)
     logger.info("chat_request_started", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     async def generate():
-        async for chunk in build_chain(user_role,user_name).astream(
+        async for chunk in build_chain(user_role).astream(
         {'question' :message},
         config={"configurable": {"session_id": session_key}}):
             yield chunk
