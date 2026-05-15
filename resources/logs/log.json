@@ -1,0 +1,8 @@
+{"asctime": "2026-05-15 16:48:44,840", "levelname": "INFO", "message": "Authentication Successfull", "request_id": "no-request", "user_name": "Tony", "role": "engineering"}
+{"asctime": "2026-05-15 16:48:44,840", "levelname": "INFO", "message": "chat_request_started", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62", "session_id": "Tony:session-1", "role": "engineering", "user_name": "Tony"}
+{"asctime": "2026-05-15 16:48:44,841", "levelname": "INFO", "message": "Initiating Vector Store", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
+{"asctime": "2026-05-15 16:48:48,129", "levelname": "INFO", "message": "Retrived top 5 from retriver", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
+{"asctime": "2026-05-15 16:48:48,135", "levelname": "INFO", "message": "Checking if session exists", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
+{"asctime": "2026-05-15 16:48:48,135", "levelname": "INFO", "message": "Creating a new chatmessagehistory object using session-id", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
+{"asctime": "2026-05-15 16:48:48,135", "levelname": "INFO", "message": "Returning chatmessagehistory object", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
+{"asctime": "2026-05-15 16:48:49,460", "levelname": "INFO", "message": "Formatting the documents returned from retriver", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}

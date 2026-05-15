@@ -12,20 +12,27 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 
 from operator import itemgetter
 
+from app.services.logger import logger,get_extra, request_id_var
+
 CHAT= chat_model()
 EMBEDDING= embedding_model()
 
 def build_retriever(embedding, user_role):
+    logger.info("Initiating Vector Store", extra=  get_extra(user_name=user_name,session_id= session_id)) 
     vector_store= get_vector_store(embedding)
     retriever = vector_store.as_retriever(search_kwargs={"k":RETRIEVER_K , 'filter': {'role':{'$in': [user_role, "general"]}}})
+    logger.info(f"Retrived top {RETRIEVER_K} from retriver", extra=  get_extra(user_name=user_name,session_id= session_id)) 
     return retriever
 
 #Memory
 store= {}
 
 def get_session_history(session_id):
+    logger.info("Checking if session exists", extra=  get_extra(user_name=user_name,session_id= session_id))
     if session_id not in store:
+        logger.info("Creating a new chatmessagehistory object using session-id", extra= get_extra(user_name=user_name,session_id= session_id))
         store[session_id] = ChatMessageHistory() #Holds multi thread messages in a list can be replaced with Redis
+    logger.info("Returning chatmessagehistory object", extra=  get_extra(user_name=user_name,session_id= session_id))
     return store[session_id]
 
 
@@ -40,9 +47,10 @@ def build_prompt():
     return prompt
 
 def format_output(docs):
+    logger.info("Formatting the documents returned from retriver", extra=  get_extra(user_name=user_name,session_id= session_id))
     return  "\n\n".join(doc.page_content for doc in docs)
 
-def build_chain(user_role):
+def build_chain(user_role,user_name):
 
     #Trimmer for making sure the context history is below 1000 tokens before passing into LLM
     trimmer= trim_messages(
@@ -51,7 +59,7 @@ def build_chain(user_role):
         token_counter=CHAT,
         include_system=True,
         allow_partial=False)
-        
+   
     parallel_chain= RunnableParallel(
         {
             'question': itemgetter('question'), # itemgetter is like key finder inside dictionary
