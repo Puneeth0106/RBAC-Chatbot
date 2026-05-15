@@ -2,10 +2,12 @@ from typing import Dict
 
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.responses import StreamingResponse
 
 from app.schemas.chat import ChatRequest, ChatResponse
 
 from app.services.chain import build_chain
+
 
 
 app = FastAPI()
@@ -45,13 +47,17 @@ def test(user=Depends(authenticate)):
 
 
 # Protected chat endpoint
-@app.post("/chat",response_model= ChatResponse)
-def query(request: ChatRequest,user=Depends(authenticate)) :
+@app.post("/chat")
+async def query(request: ChatRequest,user=Depends(authenticate)) :
     session_key=  f"{user['username']}:{request.session_id}"
     user_role= user['role']
     message= request.message
 
-    response= build_chain(user_role).invoke(
+    async def generate():
+        async for chunk in build_chain(user_role).astream(
         {'question' :message},
-        config={"configurable": {"session_id": session_key}})
-    return ChatResponse(answer=response )
+        config={"configurable": {"session_id": session_key}}):
+
+            yield chunk
+
+    return StreamingResponse(generate(), media_type="text/plain")
