@@ -13,5 +13,6 @@ dependencies = [
     "langchain-openai>=0.3.35",
     "markdown>=3.10.2",
     "pandas>=2.3.3",
+    "python-json-logger>=4.1.0",
     "unstructured>=0.18.32",
 ]

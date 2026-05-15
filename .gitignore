@@ -13,3 +13,4 @@ wheels/
 resources/vectorstore
 .env
 .claude/*
+Learning/*
