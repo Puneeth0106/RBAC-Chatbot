@@ -1,8 +1,155 @@
-{"asctime": "2026-05-15 16:48:44,840", "levelname": "INFO", "message": "Authentication Successfull", "request_id": "no-request", "user_name": "Tony", "role": "engineering"}
-{"asctime": "2026-05-15 16:48:44,840", "levelname": "INFO", "message": "chat_request_started", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62", "session_id": "Tony:session-1", "role": "engineering", "user_name": "Tony"}
-{"asctime": "2026-05-15 16:48:44,841", "levelname": "INFO", "message": "Initiating Vector Store", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
-{"asctime": "2026-05-15 16:48:48,129", "levelname": "INFO", "message": "Retrived top 5 from retriver", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
-{"asctime": "2026-05-15 16:48:48,135", "levelname": "INFO", "message": "Checking if session exists", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
-{"asctime": "2026-05-15 16:48:48,135", "levelname": "INFO", "message": "Creating a new chatmessagehistory object using session-id", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
-{"asctime": "2026-05-15 16:48:48,135", "levelname": "INFO", "message": "Returning chatmessagehistory object", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
-{"asctime": "2026-05-15 16:48:49,460", "levelname": "INFO", "message": "Formatting the documents returned from retriver", "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"}
+{
+    "asctime": "2026-05-15 16:48:44,840",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 16:48:44,840",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62",
+    "session_id": "Tony:session-1",
+    "role": "engineering",
+    "user_name": "Tony"
+}
+{
+    "asctime": "2026-05-15 16:48:44,841",
+    "levelname": "INFO",
+    "message": "Initiating Vector Store",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"
+}
+{
+    "asctime": "2026-05-15 16:48:48,129",
+    "levelname": "INFO",
+    "message": "Retrived top 5 from retriver",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"
+}
+{
+    "asctime": "2026-05-15 16:48:48,135",
+    "levelname": "INFO",
+    "message": "Checking if session exists",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"
+}
+{
+    "asctime": "2026-05-15 16:48:48,135",
+    "levelname": "INFO",
+    "message": "Creating a new chatmessagehistory object using session-id",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"
+}
+{
+    "asctime": "2026-05-15 16:48:48,135",
+    "levelname": "INFO",
+    "message": "Returning chatmessagehistory object",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"
+}
+{
+    "asctime": "2026-05-15 16:48:49,460",
+    "levelname": "INFO",
+    "message": "Formatting the documents returned from retriver",
+    "request_id": "81ed7624-7802-4280-b91a-227156bf4a62"
+}
+{
+    "asctime": "2026-05-15 16:59:13,572",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 16:59:13,572",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "ffe4dd0a-ccad-4e72-98d2-a0230177161a",
+    "session_id": "Tony:session-1",
+    "role": "engineering",
+    "user_name": "Tony"
+}
+{
+    "asctime": "2026-05-15 17:00:00,168",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 17:00:00,169",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "5a1a6602-508b-40e4-9aca-2ac8d094ab29",
+    "session_id": "Tony:session-1",
+    "role": "engineering",
+    "user_name": "Tony"
+}
+{
+    "asctime": "2026-05-15 17:00:01,944",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 17:00:01,945",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "35af758c-af4a-4a85-a3f9-9c16f3ed677f",
+    "session_id": "Tony:session-1",
+    "role": "engineering",
+    "user_name": "Tony"
+}
+{
+    "asctime": "2026-05-15 17:06:59,746",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 17:06:59,747",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "d9c5e5ed-3fb0-4498-af9d-15de3dc4b12c",
+    "session_id": "Tony:session-1",
+    "role": "engineering",
+    "user_name": "Tony"
+}
+{
+    "asctime": "2026-05-15 17:07:03,404",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 17:07:03,404",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "0c1de377-4cab-4e44-aebc-ce47990ad85b",
+    "session_id": "Tony:session-1",
+    "role": "engineering",
+    "user_name": "Tony"
+}
+{
+    "asctime": "2026-05-15 17:07:21,933",
+    "levelname": "INFO",
+    "message": "Authentication Successfull",
+    "request_id": "no-request",
+    "user_name": "Tony",
+    "role": "engineering"
+}
+{
+    "asctime": "2026-05-15 17:07:21,933",
+    "levelname": "INFO",
+    "message": "chat_request_started",
+    "request_id": "d4a1e7b6-e918-402e-b94d-0a4b9d0806fe",
+    "session_id": "Tony:session-2",
+    "role": "engineering",
+    "user_name": "Tony"
+}
