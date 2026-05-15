@@ -8,7 +8,8 @@ from app.schemas.chat import ChatRequest, ChatResponse
 
 from app.services.chain import build_chain
 
-
+from app.services.logger import logger, request_id_var , get_extra
+import uuid
 
 app = FastAPI()
 security = HTTPBasic()
@@ -30,7 +31,9 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
     password = credentials.password
     user = users_db.get(username)
     if not user or user["password"] != password:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        logger.warning(msg="Authentication Failed! Password mismatch",extra= get_extra(user_name=credentials.username))
+        raise HTTPException(status_code=401, detail="Invalid credentials")  
+    logger.info("Authentication Successfull",extra=get_extra(user_name=credentials.username, role=user["role"]))
     return {"username": username, "role": user["role"]}
 
 
@@ -52,12 +55,13 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
     session_key=  f"{user['username']}:{request.session_id}"
     user_role= user['role']
     message= request.message
-
+    #ContextVar
+    request_id= str(uuid.uuid4())
+    request_id_var.set(request_id)
+    logger.info("chat_request_started", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     async def generate():
         async for chunk in build_chain(user_role).astream(
         {'question' :message},
         config={"configurable": {"session_id": session_key}}):
-
             yield chunk
-
     return StreamingResponse(generate(), media_type="text/plain")
