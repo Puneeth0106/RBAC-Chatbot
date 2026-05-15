@@ -5,5 +5,3 @@ class ChatRequest(BaseModel):
     session_id : str = Field(description="Session Id for each individual chat and holds all the message for that converstaion")
 
 
-class ChatResponse(BaseModel):
-    answer : str = Field(description="Answer responsed by the AI model")
