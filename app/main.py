@@ -31,7 +31,7 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
     password = credentials.password
     user = users_db.get(username)
     if not user or user["password"] != password:
-        logger.warning(msg="Authentication Failed! Password mismatch",extra= get_extra(user_name=credentials.username))
+        logger.warning("Authentication Failed! Password mismatch",extra= get_extra(user_name=credentials.username))
         raise HTTPException(status_code=401, detail="Invalid credentials")  
     logger.info("Authentication Successfull",extra=get_extra(user_name=credentials.username, role=user["role"]))
     return {"username": username, "role": user["role"]}
@@ -64,4 +64,5 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
         {'question' :message},
         config={"configurable": {"session_id": session_key}}):
             yield chunk
+        logger.info("chat_request_ended", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     return StreamingResponse(generate(), media_type="text/plain")
