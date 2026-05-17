@@ -152,4 +152,18 @@
     "session_id": "Tony:session-2",
     "role": "engineering",
     "user_name": "Tony"
-}
+}{"asctime": "2026-05-17 16:51:01,456", "levelname": "INFO", "message": "Authentication Successfull", "request_id": "no-request", "user_name": "Peter", "role": "engineering"}
+{"asctime": "2026-05-17 16:51:01,456", "levelname": "INFO", "message": "chat_request_started", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb", "session_id": "Peter:peter-session1", "role": "engineering", "user_name": "Peter"}
+{"asctime": "2026-05-17 16:51:01,457", "levelname": "INFO", "message": "Initiating Vector Store", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb"}
+{"asctime": "2026-05-17 16:51:06,212", "levelname": "INFO", "message": "Retrived top 5 from retriver", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb"}
+{"asctime": "2026-05-17 16:51:06,217", "levelname": "INFO", "message": "Checking if session exists", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb"}
+{"asctime": "2026-05-17 16:51:06,218", "levelname": "INFO", "message": "Creating a new chatmessagehistory object using session-id", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb"}
+{"asctime": "2026-05-17 16:51:06,218", "levelname": "INFO", "message": "Returning chatmessagehistory object", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb"}
+{"asctime": "2026-05-17 16:51:07,751", "levelname": "INFO", "message": "Formatting the documents returned from retriver", "request_id": "1c679308-a7d6-4fed-8462-b1a9ec06a2fb"}
+{"asctime": "2026-05-17 16:56:35,074", "levelname": "INFO", "message": "Authentication Successfull", "request_id": "no-request", "user_name": "Peter", "role": "engineering"}
+{"asctime": "2026-05-17 16:56:35,075", "levelname": "INFO", "message": "chat_request_started", "request_id": "c41648ac-0909-45b9-8132-ba023ef646f4", "session_id": "Peter:peter-session1", "role": "engineering", "user_name": "Peter"}
+{"asctime": "2026-05-17 16:56:35,077", "levelname": "INFO", "message": "Initiating Vector Store", "request_id": "c41648ac-0909-45b9-8132-ba023ef646f4"}
+{"asctime": "2026-05-17 16:56:37,753", "levelname": "INFO", "message": "Retrived top 5 from retriver", "request_id": "c41648ac-0909-45b9-8132-ba023ef646f4"}
+{"asctime": "2026-05-17 16:56:37,754", "levelname": "INFO", "message": "Checking if session exists", "request_id": "c41648ac-0909-45b9-8132-ba023ef646f4"}
+{"asctime": "2026-05-17 16:56:37,754", "levelname": "INFO", "message": "Returning chatmessagehistory object", "request_id": "c41648ac-0909-45b9-8132-ba023ef646f4"}
+{"asctime": "2026-05-17 16:56:40,009", "levelname": "INFO", "message": "Formatting the documents returned from retriver", "request_id": "c41648ac-0909-45b9-8132-ba023ef646f4"}
