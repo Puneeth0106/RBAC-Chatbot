@@ -1,6 +1,5 @@
 import pytest
 from app.services.indexing import loading_docs
-from pathlib import Path
 
 
 def test_returns_for_valid_directory(tmp_path):
@@ -19,8 +18,6 @@ def test_all_docs_have_content(tmp_path):
     docs= loading_docs(tmp_path)
     for doc in docs:
         assert len(doc.page_content) >0
-
-
 
 def test_ignores_non_markdown_files(tmp_path):
     file1= tmp_path/'md_file.md'
