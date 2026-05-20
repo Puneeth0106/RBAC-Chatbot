@@ -36,6 +36,12 @@ def splitting_docs(docs):
     return final_chunks
 
 
+def tag_chunks(chunks,role):
+    for chunk in chunks:
+        chunk.metadata["role"] = role
+    return chunks
+
+
 
 if __name__== "__main__":
 
@@ -51,8 +57,6 @@ if __name__== "__main__":
         path= f"{DATA_PATH}/{role}"
         docs= loading_docs(path)
         chunks= splitting_docs(docs)
-        for chunk in chunks:
-            chunk.metadata["role"] = role
-
+        chunks= tag_chunks(chunks, role)
         vector_store.add_documents(chunks)
 
