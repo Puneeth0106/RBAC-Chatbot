@@ -5,6 +5,7 @@ from langchain_astradb import AstraDBVectorStore
 from app.services.config import COLLECTION_NAME
 from app.services.model import embedding_model
 import os
+from pathlib import Path
 
 def loading_docs(path):
     loader= DirectoryLoader(
@@ -31,7 +32,7 @@ char_splitter= RecursiveCharacterTextSplitter(chunk_size= CHUNK_SIZE,chunk_overl
 def splitting_docs(docs):
     md_chunks=[]
     for doc in docs:
-        md_chunks.extend(md_splitter.split_text(doc.page_content))
+        md_chunks.extend(md_splitter.split_documents([doc]))
     final_chunks = char_splitter.split_documents(md_chunks)
     return final_chunks
 
@@ -39,6 +40,8 @@ def splitting_docs(docs):
 def tag_chunks(chunks,role):
     for chunk in chunks:
         chunk.metadata["role"] = role
+        path= chunk.metadata["source"]
+        chunk.metadata["source"] = Path(path).relative_to(DATA_PATH)
     return chunks
 
 
@@ -57,6 +60,6 @@ if __name__== "__main__":
         path= f"{DATA_PATH}/{role}"
         docs= loading_docs(path)
         chunks= splitting_docs(docs)
-        chunks= tag_chunks(chunks, role)
+        chunks= tag_chunks(chunks, role) #datapath is inherieted directly
         vector_store.add_documents(chunks)
 
