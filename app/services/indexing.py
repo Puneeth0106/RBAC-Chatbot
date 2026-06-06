@@ -32,7 +32,11 @@ char_splitter= RecursiveCharacterTextSplitter(chunk_size= CHUNK_SIZE,chunk_overl
 def splitting_docs(docs):
     md_chunks=[]
     for doc in docs:
-        md_chunks.extend(md_splitter.split_documents([doc]))
+        chunks = md_splitter.split_text(doc.page_content)
+        for  chunk in chunks:
+            if 'source' in doc.metadata:
+                chunk.metadata["source"] = str(Path(doc.metadata['source']).relative_to(DATA_PATH))
+        md_chunks.extend(chunks)
     final_chunks = char_splitter.split_documents(md_chunks)
     return final_chunks
 
@@ -40,8 +44,6 @@ def splitting_docs(docs):
 def tag_chunks(chunks,role):
     for chunk in chunks:
         chunk.metadata["role"] = role
-        path= chunk.metadata["source"]
-        chunk.metadata["source"] = Path(path).relative_to(DATA_PATH)
     return chunks
 
 
