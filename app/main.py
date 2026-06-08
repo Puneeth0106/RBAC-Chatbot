@@ -1,3 +1,4 @@
+from emoji import version
 from typing import Dict
 
 from fastapi import FastAPI, HTTPException, Depends
@@ -10,6 +11,8 @@ from app.services.chain import build_chain
 
 from app.services.logger import logger, request_id_var , get_extra
 import uuid
+
+import json
 
 app = FastAPI()
 security = HTTPBasic()
@@ -60,9 +63,11 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
     request_id_var.set(request_id)
     logger.info("chat_request_started", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     async def generate():
-        async for chunk in build_chain(user_role).astream(
+        async for ev in build_chain(user_role).astream_events(
         {'question' :message},
-        config={"configurable": {"session_id": session_key}}):
+        config={"configurable": {"session_id": session_key}},
+        version="v2",
+        ):
             yield chunk
         logger.info("chat_request_ended", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     return StreamingResponse(generate(), media_type="text/plain")
