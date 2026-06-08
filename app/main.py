@@ -1,3 +1,5 @@
+from unstructured import chunking
+from IPython import display
 from emoji import version
 from typing import Dict
 
@@ -64,10 +66,27 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
     logger.info("chat_request_started", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     async def generate():
         async for ev in build_chain(user_role).astream_events(
-        {'question' :message},
-        config={"configurable": {"session_id": session_key}},
-        version="v2",
-        ):
-            yield chunk
+            {'question' :message},
+            config={"configurable": {"session_id": session_key}},
+            version="v2",
+            ):
+            kind= ev["event"]
+
+            if kind== "on_retriever_end":
+                docs= ev['data']['output']
+                seen, sources = set(), []
+                for doc in docs:
+                    src= doc.metadata.get("source")
+                    if src and src not in seen:
+                        seen.add(src)
+                        sources.append({'source':src,'role':doc.metadata.get("role")})
+                yield json.dumps({'type':'sources',"sources": sources}) + "\n"
+
+            elif kind== "on_chat_model_stream":
+                token= ev['data']['chunk'].content
+                if token:
+                    yield json.dumps({"type": "token", "content": token}) + "\n"
+        
+        yield json.dumps({"type": "done"}) + "\n"
         logger.info("chat_request_ended", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
-    return StreamingResponse(generate(), media_type="text/plain")
+    return StreamingResponse(generate(), media_type="application/x-ndjson")
