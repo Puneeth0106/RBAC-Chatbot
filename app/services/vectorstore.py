@@ -6,6 +6,7 @@ from astrapy.info import (
                         CollectionRerankOptions,
                         RerankServiceOptions,
                         )
+from langchain_astradb.utils.astradb import HybridSearchMode
 
 
 #Sparse Retrival
@@ -39,6 +40,7 @@ def get_vector_store(embedding_model):
         embedding=embedding_model,
         collection_lexical=lexical_collection ,
         collection_rerank= rerank,
+        hybrid_search= HybridSearchMode.ON, #Default but explicitly turning for future(i.e collection options might change)
         api_endpoint=os.getenv('ASTRA_DB_API_ENDPOINT'),
         token=os.getenv("ASTRA_DB_APPLICATION_TOKEN"),
     )
