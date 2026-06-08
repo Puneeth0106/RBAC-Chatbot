@@ -1,10 +1,8 @@
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
 from app.services.config import DATA_PATH,GLOB_PATTERN, CHUNK_OVERLAP,CHUNK_SIZE
-from langchain_astradb import AstraDBVectorStore
-from app.services.config import COLLECTION_NAME
+from app.services.vectorstore import get_vector_store
 from app.services.model import embedding_model
-import os
 from pathlib import Path
 
 def loading_docs(path):
@@ -50,14 +48,8 @@ def tag_chunks(chunks,role):
 
 if __name__== "__main__":
 
-    vector_store = AstraDBVectorStore(
-    collection_name=COLLECTION_NAME,
-    embedding=embedding_model(),
-    api_endpoint=os.getenv('ASTRA_DB_API_ENDPOINT'),
-    token=os.getenv("ASTRA_DB_APPLICATION_TOKEN"))
-
+    vector_store = get_vector_store(embedding_model())
     roles= ["engineering", "finance", "marketing","hr", "general"]
-
     for role in roles:
         path= f"{DATA_PATH}/{role}"
         docs= loading_docs(path)
