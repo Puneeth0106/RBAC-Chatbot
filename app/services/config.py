@@ -9,7 +9,7 @@ MAX_RETRIES = 6
 EMBEDDING_MODEL = "text-embedding-3-large"
 
 # Indexing config
-DATA_PATH = Path(__file__).parent.parent.joinpath('resources/data')
+DATA_PATH = Path(__file__).parent.parent.parent.joinpath('resources/data')
 GLOB_PATTERN = "**/*.md"
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
