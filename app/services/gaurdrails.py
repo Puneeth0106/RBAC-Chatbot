@@ -1,8 +1,12 @@
-from anthropic import __name
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
 from app.services.logger import logger,get_extra
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client= OpenAI()
 
 analyzer= AnalyzerEngine()
 anonymizer = AnonymizerEngine()
@@ -20,6 +24,17 @@ def scrub_pii(text: str) -> str:
         operators={"DEFAULT": OperatorConfig("replace", {"new_value": "[REDACTED]"})}
     )
     return anonymized.text
+
+
+def is_toxic(text:str)->bool:
+    try:
+        resp = client.moderations.create(model="omni-moderation-latest", input=text)
+        return resp.results[0].flagged
+    except Exception:
+        logger.warning("moderation_unavailable", extra=get_extra())
+        return False
+
+
 
 
 
