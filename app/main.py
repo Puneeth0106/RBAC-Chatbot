@@ -7,7 +7,7 @@ from fastapi.responses import StreamingResponse
 from app.schemas.chat import ChatRequest
 
 from app.services.chain import build_chain
-from app.services.gaurdrails import scrub_pii, is_toxic
+from app.services.guardrails import scrub_pii, is_toxic
 
 from app.services.logger import logger, request_id_var , get_extra
 import uuid
