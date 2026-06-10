@@ -7,7 +7,7 @@ from fastapi.responses import StreamingResponse
 from app.schemas.chat import ChatRequest
 
 from app.services.chain import build_chain
-from app.services.gaurdrails import scrub_pii
+from app.services.gaurdrails import scrub_pii, is_toxic
 
 from app.services.logger import logger, request_id_var , get_extra
 import uuid
@@ -61,6 +61,9 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
     #ContextVar
     request_id= str(uuid.uuid4())
     request_id_var.set(request_id)
+    if is_toxic(message):
+      logger.warning("toxic_input_blocked", extra=get_extra(user_name=user['username'], role=user_role))
+      raise HTTPException(status_code=400, detail="Your message was flagged as inappropriate and was not processed.")
     logger.info("chat_request_started", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     async def generate():
         async for ev in build_chain(user_role).astream_events(
