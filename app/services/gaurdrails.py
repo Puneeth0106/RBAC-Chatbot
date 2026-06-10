@@ -1,4 +1,5 @@
 from presidio_analyzer import AnalyzerEngine
+from presidio_analyzer.nlp_engine import NlpEngineProvider
 from presidio_anonymizer import AnonymizerEngine
 from presidio_anonymizer.entities import OperatorConfig
 from app.services.logger import logger,get_extra
@@ -8,7 +9,15 @@ from openai import OpenAI
 load_dotenv()
 client= OpenAI()
 
-analyzer= AnalyzerEngine()
+# We only use regex/checksum pattern recognizers (no PERSON/NER), so the small
+# spaCy model is enough — identical tokenization without the ~420 MB of word
+# vectors the large model ships. Build the engine and pass it to AnalyzerEngine.
+nlp_engine = NlpEngineProvider(nlp_configuration={
+    "nlp_engine_name": "spacy",
+    "models": [{"lang_code": "en", "model_name": "en_core_web_sm"}],
+}).create_engine()
+
+analyzer = AnalyzerEngine(nlp_engine=nlp_engine)
 anonymizer = AnonymizerEngine()
 
 PII_ENTITIES = ['CREDIT_CARD', 'US_SSN', 'EMAIL_ADDRESS', 'PHONE_NUMBER','IBAN_CODE', 'US_BANK_NUMBER']
@@ -36,11 +45,4 @@ def is_toxic(text:str)->bool:
 
 
 
-
-
-if __name__ == "__main__":
-    text_to_anonymize = "His name is Mr. Jones and his phone number is 212-555-5555"
-    analyzer_results= analyzer.analyze(text_to_anonymize,entities=['PHONE_NUMBER'],language='en')
-
-    print(analyzer_results)
 
