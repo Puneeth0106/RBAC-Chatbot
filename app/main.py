@@ -1,6 +1,3 @@
-from unstructured import chunking
-from IPython import display
-from emoji import version
 from typing import Dict
 
 from fastapi import FastAPI, HTTPException, Depends
@@ -10,6 +7,7 @@ from fastapi.responses import StreamingResponse
 from app.schemas.chat import ChatRequest
 
 from app.services.chain import build_chain
+from app.services.gaurdrails import scrub_pii
 
 from app.services.logger import logger, request_id_var , get_extra
 import uuid
@@ -59,7 +57,7 @@ def test(user=Depends(authenticate)):
 async def query(request: ChatRequest,user=Depends(authenticate)) :
     session_key=  f"{user['username']}:{request.session_id}"
     user_role= user['role']
-    message= request.message
+    message= scrub_pii(request.message)
     #ContextVar
     request_id= str(uuid.uuid4())
     request_id_var.set(request_id)
