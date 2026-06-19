@@ -1,7 +1,6 @@
 from ragas import SingleTurnSample, EvaluationDataset
 
 from ragas.llms import LangchainLLMWrapper
-from app.services.model import chat_model, embedding_model
 
 from app.services.config import EVAL_DATA_PATH
 import pandas as pd
@@ -10,11 +9,23 @@ import ast
 from ragas import evaluate
 from ragas.metrics import Faithfulness, AnswerRelevancy, LLMContextPrecisionWithReference, LLMContextRecall
 
+from app.services.config import CHAT_MODEL_NAME, TEMPERATURE, TIMEOUT,MAX_RETRIES
+from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
 
-#Configure the LLM
+#Configure the LLM seperately the default chat_model has token limit issue so initiating a new llm with 4096 tokens
 
-evaluator_llm = LangchainLLMWrapper(chat_model())
-embedding_llm= LangchainLLMWrapper(embedding_llm())
+load_dotenv()
+model = init_chat_model(
+    CHAT_MODEL_NAME,
+    temperature=TEMPERATURE,
+    timeout=TIMEOUT,
+    max_tokens=8000,
+    max_retries=MAX_RETRIES,  
+)
+
+evaluator_llm = LangchainLLMWrapper(model)
+
 
 
 
