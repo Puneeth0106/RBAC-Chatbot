@@ -73,12 +73,16 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
             ):
             kind= ev["event"]
 
+            # Event fires when retriver finishes fetching documents
             if kind== "on_retriever_end":
                 docs= ev['data']['output']
                 seen, sources = set(), []
+                #Docs is list of documents retrieved from retriever
                 for doc in docs:
+                    #Getting Source from metadata of document
                     src= doc.metadata.get("source")
                     if src and src not in seen:
+                        #Removing the duplicate values by using a set 
                         seen.add(src)
                         sources.append({'source':src,'role':doc.metadata.get("role")})
                 yield json.dumps({'type':'sources',"sources": sources}) + "\n"
