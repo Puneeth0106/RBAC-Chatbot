@@ -6,7 +6,7 @@ from astrapy.info import (
                         CollectionRerankOptions,
                         RerankServiceOptions,
                         )
-from langchain_astradb.utils.astradb import HybridSearchMode
+from langchain_astradb.utils.astradb import HybridSearchMode, SetupMode
 
 
 #Sparse Retrival
@@ -43,5 +43,7 @@ def get_vector_store(embedding_model):
         hybrid_search= HybridSearchMode.ON, #Default but explicitly turning for future(i.e collection options might change)
         api_endpoint=os.getenv('ASTRA_DB_API_ENDPOINT'),
         token=os.getenv("ASTRA_DB_APPLICATION_TOKEN"),
+        setup_mode=SetupMode.OFF, #SetupMode.OFF means "the collection already exists, just connect to it — don't try to create or modify it."
+        #Change the mode to SetupMode.SYNC when indexing new documents
     )
     return vector_store
