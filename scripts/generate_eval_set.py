@@ -17,5 +17,5 @@ for role in ["engineering", "finance", "marketing","hr", "general"]:
     df['role']= role
     frames.append(df)
 
-pd.concat(frames).to_csv(f"resources/eval/golden_raw.csv", index= False)
+pd.concat(frames).to_csv(f"resources/eval/bronze/golden_raw.csv", index= False)
 
