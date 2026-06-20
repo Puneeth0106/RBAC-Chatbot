@@ -51,7 +51,7 @@ def metric_summary():
         rows.append({'K': n, 'precision': result['llm_context_precision_with_reference'].mean(), 'recall': result['context_recall'].mean()})
     summary_df = pd.DataFrame(rows).sort_values('K')
     Path(f'{EVAL_DATA_PATH}/golden').mkdir(parents=True, exist_ok=True)
-    summary_df.to_csv(f'{EVAL_DATA_PATH}/golden/precision_recall_by_k.csv', index=False)
+    summary_df.to_csv(f'{EVAL_DATA_PATH}/gold/precision_recall_by_k.csv', index=False)
 
 
 metric_summary()
