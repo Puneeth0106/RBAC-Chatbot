@@ -18,5 +18,5 @@ CHUNK_OVERLAP = 50
 
 # Vector store config
 COLLECTION_NAME = "rbac_docs"
-RETRIEVER_K = int(os.getenv("RETRIEVER_K", 5))
+RETRIEVER_K = int(os.getenv("RETRIEVER_K", 6))
 
