@@ -1,30 +1,18 @@
 from ragas import SingleTurnSample, EvaluationDataset
-
-from ragas.llms import LangchainLLMWrapper
+from ragas.llms import llm_factory
+from ragas.run_config import RunConfig
+from openai import OpenAI
 
 from app.services.config import EVAL_DATA_PATH
 import pandas as pd
 import ast
+from dotenv import load_dotenv
 
 from ragas import evaluate
 from ragas.metrics import Faithfulness, AnswerRelevancy, LLMContextPrecisionWithReference, LLMContextRecall
 
-from app.services.config import CHAT_MODEL_NAME, TEMPERATURE, TIMEOUT,MAX_RETRIES
-from langchain.chat_models import init_chat_model
-from dotenv import load_dotenv
-
-#Configure the LLM seperately the default chat_model has token limit issue so initiating a new llm with 4096 tokens
-
 load_dotenv()
-model = init_chat_model(
-    CHAT_MODEL_NAME,
-    temperature=TEMPERATURE,
-    timeout=TIMEOUT,
-    max_tokens=8000,
-    max_retries=MAX_RETRIES,  
-)
-
-evaluator_llm = LangchainLLMWrapper(model)
+evaluator_llm = llm_factory('gpt-4o-mini', client=OpenAI())
 
 
 
@@ -48,7 +36,12 @@ for i,row in df.iterrows():
 
 raga_eval_dataset = EvaluationDataset(samples= samples)
 
-result= evaluate(dataset=raga_eval_dataset,  metrics=[Faithfulness(), AnswerRelevancy(), LLMContextPrecisionWithReference(), LLMContextRecall()], llm=evaluator_llm).to_pandas()
+result= evaluate(
+    dataset=raga_eval_dataset,
+    metrics=[Faithfulness(), AnswerRelevancy(), LLMContextPrecisionWithReference(), LLMContextRecall()],
+    llm=evaluator_llm,
+    run_config=RunConfig(timeout=120, max_workers=4, max_retries=3)
+).to_pandas()
 
 result.to_csv(f'{EVAL_DATA_PATH}/ragas_metric_scores.csv', index=False)
 
