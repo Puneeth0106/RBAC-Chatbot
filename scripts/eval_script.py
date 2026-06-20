@@ -1,12 +1,9 @@
-
 from app.services.chain import build_chain
-from app.services.config import EVAL_DATA_PATH
+from app.services.config import EVAL_DATA_PATH, RETRIEVER_K
 import pandas as pd
 import asyncio
 
-
-golden_df= pd.read_csv(f'{EVAL_DATA_PATH}/golden_raw.csv')
-print(golden_df.head(2))
+golden_df= pd.read_csv(f'{EVAL_DATA_PATH}/golden_raw.csv').head(10)
 
 response= []
 retrieved_contexts_list= []
@@ -38,6 +35,5 @@ asyncio.run(run_eval())
 golden_df['response']= response
 golden_df['retrieved_contexts']= retrieved_contexts_list
 
-print(golden_df.head(2))
 
-golden_df.to_csv(f'{EVAL_DATA_PATH}/eval_results.csv', index=False)
+golden_df.to_csv(f'{EVAL_DATA_PATH}/silver/eval_results_k{RETRIEVER_K}.csv', index=False)
