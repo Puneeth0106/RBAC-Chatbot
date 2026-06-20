@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Model config
 CHAT_MODEL_NAME = "claude-haiku-4-5-20251001"
@@ -17,5 +18,5 @@ CHUNK_OVERLAP = 50
 
 # Vector store config
 COLLECTION_NAME = "rbac_docs"
-RETRIEVER_K = 5
+RETRIEVER_K = int(os.getenv("RETRIEVER_K", 5))
 
