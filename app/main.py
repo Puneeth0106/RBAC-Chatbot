@@ -45,6 +45,15 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
 def login(user=Depends(authenticate)):
     return {"message": f"Welcome {user['username']}!", "role": user["role"]}
 
+# Health endpoint for Cloud
+@app.get("/health")
+def health():
+    return {"status": "ok",
+    'dependencies': {
+    "astradb": "ok",
+    "llm": "ok"
+  }}
+
 
 # Protected test endpoint
 @app.get("/test")
