@@ -20,6 +20,9 @@ dependencies = [
     "unstructured>=0.18.32",
 ]
 
+[tool.pytest.ini_options]
+markers = ["integration: marks tests that hit live external services (AstraDB, LLM)"]
+
 [dependency-groups]
 dev = [
     "ragas>=0.4.3",
