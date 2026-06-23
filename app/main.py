@@ -1,3 +1,4 @@
+from app.services.vectorstore import get_vector_store
 from typing import Dict
 
 from fastapi import FastAPI, HTTPException, Depends
@@ -5,8 +6,8 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import StreamingResponse
 
 from app.schemas.chat import ChatRequest
-
-from app.services.chain import build_chain
+from app.services.vectorstore import get_vector_store
+from app.services.chain import build_chain, CHAT, EMBEDDING
 from app.services.guardrails import scrub_pii, is_toxic
 
 from app.services.logger import logger, request_id_var , get_extra
@@ -47,12 +48,30 @@ def login(user=Depends(authenticate)):
 
 # Health endpoint for Cloud
 @app.get("/health")
-def health():
-    return {"status": "ok",
-    'dependencies': {
-    "astradb": "ok",
-    "llm": "ok"
-  }}
+async def health():
+    status= {'llm': "ok", "embedding": "ok", "astradb": "ok"}
+    healthy= True
+
+    #Check LLM initialization
+    if CHAT is None:
+        status['llm']= "unavailable"
+        healthy= False
+
+    if EMBEDDING is None:
+        status['embedding']= 'unavailable'
+        healthy= False
+    
+
+    try:
+        store= get_vector_store(EMBEDDING)
+        await store.astra_env.async_database.info()
+    except Exception:
+        status['astradb']= "unavailable"
+        healthy= False
+    if not healthy:
+        raise HTTPException(status_code=503, detail=status)
+
+    return {"healthy": healthy, "dependencies": status}
 
 
 # Protected test endpoint
