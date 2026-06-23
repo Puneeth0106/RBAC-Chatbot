@@ -18,7 +18,7 @@ def test_pipeline_rbac_isolation(require_env):
     "Marketing user asking about finance data should get a refusal, not financial figures"
     chain = build_chain("marketing")
     result = chain.invoke(
-        {"question": "What are FinSolve's quarterly revenue figures?"},
+        {"question": "What is Sara Sharma's salary?"},
         config={"configurable": {"session_id": "test:pipeline-rbac"}},
     )
     print(f"\nLLM response: {result}")
