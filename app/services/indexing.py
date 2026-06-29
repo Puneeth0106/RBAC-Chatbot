@@ -4,6 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter, MarkdownHea
 from app.services.config import DATA_PATH,GLOB_PATTERN, CHUNK_OVERLAP,CHUNK_SIZE, MANIFEST_DATA_PATH
 from app.services.vectorstore import get_vector_store
 from app.services.model import embedding_model
+from app.services.logger import logger, get_extra
 from pathlib import Path
 import json
 
@@ -76,14 +77,17 @@ def refresh_index(path, vector_store):
         hash_file= compute_hash(Path(file))
         # Check the computed hash is inside the manifest; if it is new we add them if changed we index them again
         if str(file) not in manifest or manifest[str(file)] != hash_file:
+            logger.info(msg= f"New file or File changes detected. {file}",extra= get_extra())
             manifest[str(file)]= hash_file
             #Loading docs takes Directory loader so not using it and just using TextLoader
             docs = TextLoader(str(file)).load()
             chunks = splitting_docs(docs)
             chunks = tag_chunks(chunks, role)
             vector_store.add_documents(chunks)
-    
+            logger.info(msg= "Document reindexed")
+
     save_manifest(manifest,MANIFEST_DATA_PATH.joinpath("index_manifest.json"))
+    logger.info("Manifest updated", extra=get_extra())
 
 
 
