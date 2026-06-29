@@ -1,9 +1,12 @@
+import hashlib
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter, MarkdownHeaderTextSplitter
-from app.services.config import DATA_PATH,GLOB_PATTERN, CHUNK_OVERLAP,CHUNK_SIZE
+from app.services.config import DATA_PATH,GLOB_PATTERN, CHUNK_OVERLAP,CHUNK_SIZE, MANIFEST_DATA_PATH
 from app.services.vectorstore import get_vector_store
 from app.services.model import embedding_model
 from pathlib import Path
+import json
+
 
 def loading_docs(path):
     loader= DirectoryLoader(
@@ -46,14 +49,48 @@ def tag_chunks(chunks,role):
 
 
 
-if __name__== "__main__":
+def compute_hash(path):
+    data= Path(path).read_bytes()
+    hash= hashlib.md5(data).hexdigest()
+    return hash
 
+
+def load_manifest(path):
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+
+def save_manifest(manifest,path):
+    with open(path, mode='w') as f:
+        json.dump(manifest,f)
+
+
+def refresh_index(path, vector_store):
+    MANIFEST_DATA_PATH.mkdir(parents=True, exist_ok=True)
+    manifest= load_manifest(MANIFEST_DATA_PATH / "index_manifest.json")
+    for file in Path(path).rglob('*md'):
+        role= Path(file).parent.name
+        hash_file= compute_hash(Path(file))
+        # Check the computed hash is inside the manifest; if it is new we add them if changed we index them again
+        if str(file) not in manifest or manifest[str(file)] != hash_file:
+            manifest[str(file)]= hash_file
+            #Loading docs takes Directory loader so not using it and just using TextLoader
+            docs = TextLoader(str(file)).load()
+            chunks = splitting_docs(docs)
+            chunks = tag_chunks(chunks, role)
+            vector_store.add_documents(chunks)
+    
+    save_manifest(manifest,MANIFEST_DATA_PATH.joinpath("index_manifest.json"))
+
+
+
+
+
+if __name__== "__main__":
     vector_store = get_vector_store(embedding_model())
-    roles= ["engineering", "finance", "marketing","hr", "general"]
-    for role in roles:
-        path= f"{DATA_PATH}/{role}"
-        docs= loading_docs(path)
-        chunks= splitting_docs(docs)
-        chunks= tag_chunks(chunks, role) #datapath is inherieted directly
-        vector_store.add_documents(chunks)
+    refresh_index(DATA_PATH,vector_store)
+
 
