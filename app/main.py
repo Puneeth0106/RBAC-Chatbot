@@ -4,6 +4,7 @@ from typing import Dict
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas.chat import ChatRequest
 from app.services.vectorstore import get_vector_store
@@ -17,6 +18,14 @@ import json
 
 app = FastAPI()
 security = HTTPBasic()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Vite dev server; add AWS URL in prod
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dummy user database
 users_db: Dict[str, Dict[str, str]] = {
