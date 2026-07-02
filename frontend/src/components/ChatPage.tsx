@@ -110,14 +110,44 @@ function SourcesPanel({ sources }: { sources: Source[] }) {
   )
 }
 
+// ─── Suggestions panel ──────────────────────────────────────────────────────
+
+function SuggestionsPanel({
+  suggestions,
+  onSelect,
+}: {
+  suggestions: string[]
+  onSelect: (q: string) => void
+}) {
+  if (!suggestions.length) return null
+  return (
+    <div className="mt-3">
+      <p className="text-xs text-slate-600 mb-2">Follow-up questions</p>
+      <div className="flex flex-col gap-1.5">
+        {suggestions.map((q, i) => (
+          <button
+            key={i}
+            onClick={() => onSelect(q)}
+            className="text-left text-xs px-3 py-2 rounded-lg border border-white/8 hover:border-indigo-500/30 bg-white/2 hover:bg-indigo-500/8 text-slate-400 hover:text-slate-200 transition-all"
+          >
+            {q}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Message bubble ─────────────────────────────────────────────────────────
 
 function MessageBubble({
   message,
   rc,
+  onSuggestionClick,
 }: {
   message: Message
   rc: typeof ROLE[Role]
+  onSuggestionClick: (q: string) => void
 }) {
   if (message.role === 'user') {
     return (
@@ -174,6 +204,9 @@ function MessageBubble({
 
         {!message.isStreaming && message.sources && (
           <SourcesPanel sources={message.sources} />
+        )}
+        {!message.isStreaming && message.suggestions && (
+          <SuggestionsPanel suggestions={message.suggestions} onSelect={onSuggestionClick} />
         )}
       </div>
     </div>
@@ -252,6 +285,7 @@ export default function ChatPage({ auth, onLogout }: Props) {
       const decoder = new TextDecoder()
       let buf = ''
       let sources: Source[] = []
+      let fullAnswer = ''
 
       while (true) {
         const { done, value } = await reader.read()
@@ -266,6 +300,7 @@ export default function ChatPage({ auth, onLogout }: Props) {
           if (frame.type === 'sources') {
             sources = frame.sources ?? []
           } else if (frame.type === 'token') {
+            fullAnswer += frame.content
             setMessages(prev =>
               prev.map(m =>
                 m.id === asstId ? { ...m, content: m.content + frame.content } : m,
@@ -279,6 +314,27 @@ export default function ChatPage({ auth, onLogout }: Props) {
             )
           }
         }
+      }
+
+      // Fetch follow-up suggestions in the background after stream ends
+      if (fullAnswer) {
+        fetch(`${API_BASE}/suggestions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Basic ${auth.credentials}`,
+          },
+          body: JSON.stringify({ question: trimmed, answer: fullAnswer }),
+        })
+          .then(r => r.json())
+          .then(data => {
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === asstId ? { ...m, suggestions: data.suggestions } : m,
+              ),
+            )
+          })
+          .catch(() => {})
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Something went wrong.'
@@ -414,7 +470,7 @@ export default function ChatPage({ auth, onLogout }: Props) {
             </div>
           ) : (
             messages.map(msg => (
-              <MessageBubble key={msg.id} message={msg} rc={rc} />
+              <MessageBubble key={msg.id} message={msg} rc={rc} onSuggestionClick={sendMessage} />
             ))
           )}
           <div ref={bottomRef} />

@@ -6,7 +6,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatRequest, SuggestionResponse, SuggestionRequest
 from app.services.vectorstore import get_vector_store
 from app.services.chain import build_chain, CHAT, EMBEDDING
 from app.services.guardrails import scrub_pii, is_toxic
@@ -132,3 +132,16 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
         yield json.dumps({"type": "done"}) + "\n"
         logger.info("chat_request_ended", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     return StreamingResponse(generate(), media_type="application/x-ndjson")
+
+
+
+@app.post("/suggestions", response_model= SuggestionResponse)
+def suggestions(request: SuggestionRequest, user= Depends(authenticate)):
+    prompt = f"""Based on this Q&A, generate exactly 3 short follow-up questions the user might ask next.
+                Question: {request.question}
+                Answer: {request.answer}"""
+
+    result = CHAT.with_structured_output(SuggestionResponse).invoke(prompt)
+    return result
+
+    
