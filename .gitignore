@@ -15,6 +15,5 @@ resources/logs
 .env
 .claude/*
 Learning/*
-resources/logs/log.json
 
 frontend/node_modules
