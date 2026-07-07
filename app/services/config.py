@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Model config
 CHAT_MODEL_NAME = "claude-haiku-4-5-20251001"
