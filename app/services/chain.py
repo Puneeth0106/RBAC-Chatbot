@@ -1,6 +1,6 @@
 from app.services.model import chat_model, embedding_model
 from app.services.vectorstore import get_vector_store
-from app.services.config import RETRIEVER_K
+from app.services.config import RETRIEVER_K,UPSTASH_REDIS_REST_TOKEN,UPSTASH_REDIS_REST_URL,SESSION_TTL_SECONDS
 
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel, RunnableLambda
@@ -8,7 +8,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import trim_messages
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
-from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_community.chat_message_histories import UpstashRedisChatMessageHistory
 
 from operator import itemgetter
 
@@ -24,16 +24,18 @@ def build_retriever(embedding, user_role):
     logger.info(f"Retrived top {RETRIEVER_K} from retriver", extra=  get_extra()) 
     return retriever
 
-#Memory
-store= {}
+#Memory(replaced in memory storage with Upstashredis persistant memory using RestAPI)
 
 def get_session_history(session_id):
-    logger.info("Checking if session exists", extra=  get_extra())
-    if session_id not in store:
-        logger.info("Creating a new chatmessagehistory object using session-id", extra= get_extra())
-        store[session_id] = ChatMessageHistory() #Holds multi thread messages in a list can be replaced with Redis
-    logger.info("Returning chatmessagehistory object", extra=  get_extra())
-    return store[session_id]
+    logger.info("Connecting to Redis for session history", extra=  get_extra())
+    return UpstashRedisChatMessageHistory(
+        session_id= session_id,
+        url= UPSTASH_REDIS_REST_URL,
+        token= UPSTASH_REDIS_REST_TOKEN,
+        ttl= SESSION_TTL_SECONDS
+    )
+
+
 
 
 def build_prompt():
