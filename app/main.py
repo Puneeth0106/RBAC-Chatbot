@@ -15,6 +15,7 @@ from app.services.logger import logger, request_id_var , get_extra
 import uuid
 
 import json
+import time
 
 app = FastAPI()
 security = HTTPBasic()
@@ -98,11 +99,14 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
     #ContextVar
     request_id= str(uuid.uuid4())
     request_id_var.set(request_id)
+
     if is_toxic(message):
       logger.warning("toxic_input_blocked", extra=get_extra(user_name=user['username'], role=user_role))
       raise HTTPException(status_code=400, detail="Your message was flagged as inappropriate and was not processed.")
     logger.info("chat_request_started", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
     async def generate():
+        start_time= time.time()
+        total_tokens= 0
         async for ev in build_chain(user_role).astream_events(
             {'question' :message},
             config={"configurable": {"session_id": session_key}},
@@ -128,9 +132,22 @@ async def query(request: ChatRequest,user=Depends(authenticate)) :
                 token= ev['data']['chunk'].content
                 if token:
                     yield json.dumps({"type": "token", "content": token}) + "\n"
-        
+
+            elif kind== "on_chat_model_end":
+                try:
+                    msg= ev['data'].get('output')
+
+                    if hasattr(msg, "usage_metadata") and msg.usage_metadata:
+                        total_tokens= msg.usage_metadata.get("total_tokens",0)
+                except Exception:
+                    pass
         yield json.dumps({"type": "done"}) + "\n"
-        logger.info("chat_request_ended", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'] ))
+        # End time be inside the generate function because streaming response will get triggered first and then build_chain so adding a time function next or just before the streaming response will actually stop executing Langchain and give you latency like 0 seconds. 
+        end_time= time.time()
+        latency= end_time - start_time
+        logger.info("chat_request_ended", extra=get_extra(session_id=session_key, role=user_role, user_name= user['username'], latency_seconds= round(latency,2), total_tokens= total_tokens ))
+
+    
     return StreamingResponse(generate(), media_type="application/x-ndjson")
 
 
