@@ -1,0 +1,13 @@
+version: "3"
+
+networks:
+  loki-grafana:
+
+services:
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    networks:
+      - loki-grafana
+    command: -config.file=/etc/loki/local-config.yaml
