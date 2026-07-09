@@ -1,0 +1,41 @@
+// 1. THE FINDER                                                                                                                                        
+local.file_match "app_logs" {                                                                                                                           
+    path_targets = [{"__path__" = "/var/log/app_logs/log.json"}]                                                                                          
+}                                                                                                                                                       
+                                                                                                                                                        
+loki.source.file "log_scraper" {                                                                                                                        
+    targets    = local.file_match.app_logs.targets                                                                                                        
+    forward_to = [loki.process.parse_json.receiver]                                                                                                       
+}                                                                                                                                                       
+                                                                                                                                                        
+// 2. THE PARSER (Extracting the JSON we wrote in Python)                                                                                               
+loki.process "parse_json" {                                                                                                                             
+    forward_to = [loki.write.local_loki.receiver]                                                                                                         
+                                                                                                                                                        
+    stage.json {                                                                                                                                          
+    expressions = {                                                                                                                                     
+        level = "levelname",                                                                                                                              
+        message = "message",                                                                                                                              
+        role = "role",                                                                                                                                    
+        user_name = "user_name",                                                                                                                          
+        latency = "latency_seconds",                                                                                                                      
+        tokens = "total_tokens"                                                                                                                           
+    }                                                                                                                                                   
+    }                                                                                                                                                     
+                                                                                                                                                        
+    // We turn these fields into "Labels" to make querying ultra-fast                                                                                     
+    stage.labels {                                                                                                                                        
+    values = {                                                                                                                                          
+        level = "",                                                                                                                                       
+        role = "",                                                                                                                                        
+        user_name = ""                                                                                                                                    
+    }                                                                                                                                                   
+    }                                                                                                                                                     
+}                                                                                                                                                       
+                                                                                                                                                        
+// 3. THE SHIPPER                                                                                                                                       
+loki.write "local_loki" {                                                                                                                               
+    endpoint {                                                                                                                                            
+    url = "http://loki:3100/loki/api/v1/push"                                                                                                           
+    }                                                                                                                                                     
+}
