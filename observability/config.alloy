@@ -19,7 +19,7 @@ loki.process "parse_json" {
         role = "role",                                                                                                                                    
         user_name = "user_name",                                                                                                                          
         latency = "latency_seconds",                                                                                                                      
-        tokens = "total_tokens"                                                                                                                           
+        tokens = "total_tokens",
     }                                                                                                                                                   
     }                                                                                                                                                     
                                                                                                                                                         
@@ -28,7 +28,7 @@ loki.process "parse_json" {
     values = {                                                                                                                                          
         level = "",                                                                                                                                       
         role = "",                                                                                                                                        
-        user_name = ""                                                                                                                                    
+        user_name = "",
     }                                                                                                                                                   
     }                                                                                                                                                     
 }                                                                                                                                                       
