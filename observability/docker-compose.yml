@@ -10,6 +10,7 @@ services:
       - "3100:3100"
     networks:
       - loki-grafana
+    # Command tells loki service that settings are baked into loki-config.yaml  
     command: -config.file=/etc/loki/local-config.yaml
 
   grafana:
@@ -21,6 +22,22 @@ services:
 
     ports:
       - "3000:3000"
+    networks:
+      - loki-grafana
+    depends_on:
+      - loki
+
+  alloy:
+    image: grafana/alloy:latest
+    volumes:
+      # 1. We share our local config file with Alloy                                                                                                                   
+      - ./config.alloy:/etc/alloy/config.alloy
+      # 2. We share our app's log folder with Alloy (ro means Read-Only for safety)
+      - ../resources/logs:/var/log/app_logs:ro
+    # Start the program and open port 12345 and use settings located in /etc/alloy/config.alloy
+    command: run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
+    ports:
+      - "12345:12345"
     networks:
       - loki-grafana
     depends_on:
